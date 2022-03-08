@@ -3,6 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  PAGEID: '102280315741900',
   production: false,
   crawlerAPI: 'http://127.0.0.1:5000',
   firebase: {

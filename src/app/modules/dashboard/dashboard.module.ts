@@ -3,15 +3,22 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-
+import { MatButtonModule } from '@angular/material/button';
+import { FbServiceService } from './fb-service.service';
+import { CommentDetailsComponent } from './components/comment-details/comment-details.component';
 
 @NgModule({
   declarations: [
-    DashboardComponent
+    DashboardComponent,
+    CommentDetailsComponent
   ],
   imports: [
     CommonModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    MatButtonModule
+  ],
+  providers: [
+    FbServiceService
   ]
 })
 export class DashboardModule { }

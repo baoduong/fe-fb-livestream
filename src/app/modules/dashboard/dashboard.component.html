@@ -1,23 +1,12 @@
-<button (click)="getPageAccessToken()">
-    Get page AccessToken
-</button>
+<ng-container *ngIf="(live | async) === null">
+    <div class="live_status_bar">
+        {{(live | async) !== null ? 'Đang live': 'Không tìm thấy live nào'}}
+    </div>
+    <button mat-raised-button class="bttn-find-live" color="primary" (click)="getLiveVideo()">
+        Tìm livestream hiện tại
+    </button>
+</ng-container>
 
-<button (click)="getLiveVideo()">
-    Get Live Video
-</button>
+<ng-template #chatDetailContainer></ng-template>
 
-<button (click)="getPagePostID()">
-    Get Page Post Id
-</button>
-
-<button (click)="getComments()">
-    Try to get page!
-</button>
-
-<button (click)="getUserInfo('1382841532216275_1382841888882906')">
-    Try to get user info
-</button>
-
-<p>dashboard works!</p>
-
-
+<button (click)="addMessageComment('haha')">Add con</button>

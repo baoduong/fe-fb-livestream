@@ -1,0 +1,16 @@
+.live_status_bar {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  position: relative;
+  background-color: #8e60de;
+}
+
+.bttn-find-live {
+  position: absolute;
+  right: calc(50% - 87px);
+  top: 40%;
+}

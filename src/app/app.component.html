@@ -1,5 +1,14 @@
-<mat-toolbar color="primary">
-    <mat-icon>local_fire_department</mat-icon>
-    <span>Kanban Fire</span>
-</mat-toolbar>
-<router-outlet></router-outlet>
+<mat-drawer-container class="example-container" autosize>
+    <mat-drawer #drawer class="example-sidenav" mode="push">
+        <app-navigation-bar></app-navigation-bar>
+    </mat-drawer>
+
+    <div class="sidenav-content">
+        <mat-toolbar color="primary">
+            <mat-icon (click)="drawer.toggle()">local_fire_department</mat-icon>
+            <span>Facebook livestream</span>
+        </mat-toolbar>
+        <router-outlet></router-outlet>
+    </div>
+
+</mat-drawer-container>
