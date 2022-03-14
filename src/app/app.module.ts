@@ -14,6 +14,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { environment } from 'src/environments/environment';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+
 import { NavigationBarComponent } from './components/navigation-bar/navigation-bar.component';
 @NgModule({
   declarations: [
@@ -32,6 +33,8 @@ import { NavigationBarComponent } from './components/navigation-bar/navigation-b
     MatListModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
+    // AngularFireModule.initializeApp(environment.firebase),
+    // AngularFirestoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]

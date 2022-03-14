@@ -25,19 +25,27 @@ export class DashboardComponent implements OnInit {
     private componentFactoryResolver: ComponentFactoryResolver
   ) {
     this.live.pipe(filter((video) => video)).subscribe((video) => {
-      console.log('video', video);
       const { id } = video;
 
       var source = new EventSource(
         `https://streaming-graph.facebook.com/${id}/live_comments?access_token=${this.ACCESSTOKEN_PAGE}&comment_rate=one_per_two_seconds&fields=from{name,id},message`
       );
       source.onmessage = (event) => {
-        // Do something with event.message for example
-        console.log('Event', event);
         const { data } = event;
         const messages = JSON.parse(data);
-        console.log('Message:', messages);
+        const { message, id: comment_id } = messages;
 
+
+        this.fbServices.getUserInfo(comment_id).subscribe((u: any) => {
+          const { user } = u;
+          const userInfo = JSON.parse(user);
+          const _user = JSON.parse(userInfo);
+          const { comment } = _user;
+          const _comment = (comment as any[])[0]
+          const { author, text } = _comment;
+          const { identifier, name, url } = author;
+          this.addMessageComment(message, identifier, name, url);
+        });
       };
     });
   }
@@ -45,15 +53,20 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  addMessageComment(message: string) {
+  addMessageComment(message: string, identifier: string, name: string, url: string) {
     if (this.vcrChatDetailContainer) {
-      const cpnMessageDetail = new CommentDetails(message, CommentDetailsComponent);
+      const cpnMessageDetail = new CommentDetails(
+        message, identifier, name, url,
+        CommentDetailsComponent);
 
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(cpnMessageDetail.component);
       const componentRef = this.vcrChatDetailContainer.createComponent<any>(componentFactory);
       // this.render.addClass(componentRef.location.nativeElement, cssClass);
       componentRef.instance.message = message;
-      componentRef.changeDetectorRef.markForCheck();
+      componentRef.instance.identifier = identifier;
+      componentRef.instance.url = url;
+      componentRef.instance.name = name;
+      componentRef.changeDetectorRef.detectChanges();
     }
   }
 
@@ -76,12 +89,5 @@ export class DashboardComponent implements OnInit {
           }
         })
       });
-  }
-
-
-  getUserInfo(comment_id: string, message: string) {
-    this.fbServices.getUserInfo(comment_id).subscribe(u => {
-
-    });
   }
 }

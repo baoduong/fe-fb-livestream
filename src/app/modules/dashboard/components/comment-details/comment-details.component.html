@@ -1,2 +1,29 @@
-<p>comment-details works!</p>
-{{message}}
+<div class="wrapper-comment-container">
+    <div class="flex-1">
+        <div>
+            <strong class="name">{{name}}</strong>
+        </div>
+        <div>
+            <span>
+                {{message}}
+            </span>
+        </div>
+    </div>
+    <div>
+        <button mat-raised-button color="accent" title="Chốt đơn">
+            Chốt đơn
+        </button>
+
+    </div>
+</div>
+<div class="extend-container">
+    <button mat-raised-button color="primary" title="Lưu thông tin">
+        Lưu thông tin
+    </button>
+    <button mat-raised-button color="primary" title="Không thể ship hàng">
+        Không thể ship
+    </button>
+    <button mat-flat-button title="Lưu thông tin">
+        Bom hàng
+    </button>
+</div>

@@ -1,3 +1,6 @@
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { environment } from 'src/environments/environment';
+import { initializeApp } from '@angular/fire/app';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
