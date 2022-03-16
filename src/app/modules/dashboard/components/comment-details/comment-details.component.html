@@ -10,16 +10,17 @@
         </div>
     </div>
     <div>
-        <button mat-raised-button color="accent" title="Chốt đơn">
+        <button [disabled]="isDealed$ | async" (click)="makeDeal()" mat-raised-button color="accent" title="Chốt đơn">
             Chốt đơn
         </button>
-
     </div>
 </div>
 <div class="extend-container">
-    <button mat-raised-button color="primary" title="Lưu thông tin">
-        Lưu thông tin
-    </button>
+    <ng-container *ngIf="!(isExisted$ | async)">
+        <button mat-raised-button (click)="saveCustomer()" color="primary" title="Lưu thông tin">
+            Lưu thông tin
+        </button>
+    </ng-container>
     <button mat-raised-button color="primary" title="Không thể ship hàng">
         Không thể ship
     </button>

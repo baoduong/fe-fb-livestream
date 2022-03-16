@@ -16,6 +16,8 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 
 import { NavigationBarComponent } from './components/navigation-bar/navigation-bar.component';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,12 +33,15 @@ import { NavigationBarComponent } from './components/navigation-bar/navigation-b
     MatIconModule,
     MatSidenavModule,
     MatListModule,
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),
-    // AngularFireModule.initializeApp(environment.firebase),
-    // AngularFirestoreModule
+    // provideFirebaseApp(() => initializeApp(environment.firebase)),
+    // provideFirestore(() => getFirestore()),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
+    provideFirebaseApp(() => initializeApp(environment.firebase))
   ],
-  providers: [],
+  providers: [
+    
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

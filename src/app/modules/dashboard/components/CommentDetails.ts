@@ -15,6 +15,8 @@ export interface ICommentDetail {
     identifier: string;
     name: string;
     url: string;
+    invoiceNumber: BehaviorSubject<number>;
+    eventClickedMakeDeal?: EventEmitter<any>;
 }
 
 export class CommentDetails implements ICommentDetail {
@@ -23,6 +25,7 @@ export class CommentDetails implements ICommentDetail {
         public identifier: string,
         public name: string,
         public url: string,
+        public invoiceNumber: BehaviorSubject<number>,
         public component: Type<any>
     ) {
         this.component = component;
@@ -30,6 +33,7 @@ export class CommentDetails implements ICommentDetail {
         this.identifier = identifier;
         this.name = name;
         this.url = url;
+        this.invoiceNumber = invoiceNumber
     }
     // eventClickedAvatar: EventEmitter<any>;
 }

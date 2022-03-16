@@ -14,3 +14,12 @@
   right: calc(50% - 87px);
   top: 40%;
 }
+.invoice_info {
+  font-size: 16px;
+  padding: 13px;
+  background: #9461ed;
+  color: #fff;
+  .number{
+    font-size: 25px;
+  }
+}

@@ -6,5 +6,11 @@
         Tìm livestream hiện tại
     </button>
 </ng-container>
-
+<ng-container *ngIf="(live | async) !== null">
+    <div class="invoice_info">
+        Số thứ tự đơn hàng tiếp theo: <strong class="number">
+            0{{ invoiceNumber$.value }}
+        </strong>
+    </div>
+</ng-container>
 <ng-template #chatDetailContainer></ng-template>

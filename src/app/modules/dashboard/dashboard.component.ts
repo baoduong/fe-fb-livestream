@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject, filter } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CommentDetailsComponent } from './components/comment-details/comment-details.component';
@@ -12,23 +12,23 @@ import { FbServiceService } from './fb-service.service';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
+  invoiceNumber$ = new BehaviorSubject<number>(1);
   live = new BehaviorSubject<any>(null);
   USERACCESSTOKEN = localStorage.getItem('fb_accessToken');
-  PAGEID = '102280315741900';
-  userID = '10217314997421947';
   ACCESSTOKEN_PAGE = '';
 
   @ViewChild('chatDetailContainer', { read: ViewContainerRef })
   vcrChatDetailContainer!: ViewContainerRef;
 
   constructor(private fbServices: FbServiceService,
-    private componentFactoryResolver: ComponentFactoryResolver
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private cd: ChangeDetectorRef
   ) {
     this.live.pipe(filter((video) => video)).subscribe((video) => {
       const { id } = video;
 
       var source = new EventSource(
-        `https://streaming-graph.facebook.com/${id}/live_comments?access_token=${this.ACCESSTOKEN_PAGE}&comment_rate=one_per_two_seconds&fields=from{name,id},message`
+        `https://streaming-graph.facebook.com/${id}/live_comments?access_token=${this.ACCESSTOKEN_PAGE}&comment_rate=one_hundred_per_second&fields=from{name,id},message`
       );
       source.onmessage = (event) => {
         const { data } = event;
@@ -44,19 +44,20 @@ export class DashboardComponent implements OnInit {
           const _comment = (comment as any[])[0]
           const { author, text } = _comment;
           const { identifier, name, url } = author;
-          this.addMessageComment(message, identifier, name, url);
+          this.addMessageComment(message, identifier, name, url, this.invoiceNumber$);
         });
       };
     });
   }
 
   ngOnInit(): void {
+    this.getLiveVideo()
   }
 
-  addMessageComment(message: string, identifier: string, name: string, url: string) {
+  addMessageComment(message: string, identifier: string, name: string, url: string, invoiceNumber: BehaviorSubject<number>) {
     if (this.vcrChatDetailContainer) {
       const cpnMessageDetail = new CommentDetails(
-        message, identifier, name, url,
+        message, identifier, name, url, invoiceNumber,
         CommentDetailsComponent);
 
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(cpnMessageDetail.component);
@@ -66,8 +67,20 @@ export class DashboardComponent implements OnInit {
       componentRef.instance.identifier = identifier;
       componentRef.instance.url = url;
       componentRef.instance.name = name;
+      componentRef.instance.invoiceNumber = invoiceNumber;
       componentRef.changeDetectorRef.detectChanges();
+
+      componentRef.instance.eventClickedMakeDeal.subscribe((invoiceNumber: any) => {
+        console.log('Invoice number', invoiceNumber);
+        this.updateInvoiceNumber(invoiceNumber);
+      })
     }
+  }
+
+  updateInvoiceNumber(invoiceNumber: number) {
+    this.invoiceNumber$.next(invoiceNumber + 1);
+    console.log('Số thứ tự đơn hàng tiếp theo', this.invoiceNumber$.value);
+    this.cd.detectChanges();
   }
 
   getLiveVideo() {

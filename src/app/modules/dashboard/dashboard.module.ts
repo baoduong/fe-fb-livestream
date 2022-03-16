@@ -1,4 +1,3 @@
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { environment } from 'src/environments/environment';
 import { initializeApp } from '@angular/fire/app';
 import { NgModule } from '@angular/core';
@@ -9,6 +8,8 @@ import { DashboardComponent } from './dashboard.component';
 import { MatButtonModule } from '@angular/material/button';
 import { FbServiceService } from './fb-service.service';
 import { CommentDetailsComponent } from './components/comment-details/comment-details.component';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { CommentDetailsComponent } from './components/comment-details/comment-de
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    MatButtonModule
+    MatButtonModule,
+    
   ],
   providers: [
     FbServiceService
