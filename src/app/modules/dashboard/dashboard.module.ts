@@ -10,11 +10,13 @@ import { FbServiceService } from './fb-service.service';
 import { CommentDetailsComponent } from './components/comment-details/comment-details.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { SelfTestComponent } from './self-test/self-test.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
-    CommentDetailsComponent
+    CommentDetailsComponent,
+    SelfTestComponent
   ],
   imports: [
     CommonModule,

@@ -1,5 +1,6 @@
 import { Component, Inject, AfterViewInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { EpsonService } from './services/epson.service';
 
 declare var FB: any;
 
@@ -11,12 +12,9 @@ declare var FB: any;
 export class AppComponent implements AfterViewInit {
   title = 'fbLivestream';
   window: any;
-  constructor(@Inject(DOCUMENT) private document: Document) {
+  constructor(@Inject(DOCUMENT) private document: Document,
+    private epsonService: EpsonService) {
     this.window = this.document.defaultView;
-  }
-
-  ngAfterViewInit() {
-    console.log('Let fb login')
     this.window.fbAsyncInit = function () {
       FB.init({
         appId: '1674454719571609',
@@ -25,7 +23,13 @@ export class AppComponent implements AfterViewInit {
         version: 'v13.0'
       });
     };
-    FB.AppEvents.logPageView();
+  }
+
+  ngAfterViewInit() {
+    console.log('Let fb login')
+    
+    this.window.fbAsyncInit();
+    // FB.AppEvents.logPageView();
     FB.getLoginStatus(function (response: any) {   // See the onlogin handler
       console.log('response', response);
       if (response.status === 'connected') {
@@ -33,12 +37,13 @@ export class AppComponent implements AfterViewInit {
         const { accessToken } = authResponse;
         localStorage.setItem('fb_accessToken', accessToken);
       } else {
-        //   FB.login((response:any) => {
-        // // handle the response 
-        // });
+        FB.login((response: any) => {
+          console.log("FB's Response: ", response)
+        });
       }
     });
-
+    console.log('Connect printer');
+    this.epsonService.connect()
   }
 
 

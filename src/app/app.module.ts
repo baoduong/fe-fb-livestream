@@ -18,6 +18,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { NavigationBarComponent } from './components/navigation-bar/navigation-bar.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { EpsonService } from './services/epson.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +41,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
     provideFirebaseApp(() => initializeApp(environment.firebase))
   ],
   providers: [
-    
+    EpsonService
   ],
   bootstrap: [AppComponent]
 })
