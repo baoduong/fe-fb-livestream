@@ -1,16 +1,27 @@
-import { IP_PRINTER, PORT_PRINTER } from './../const';
+import { HttpClient } from '@angular/common/http';
+import { IP_PRINTER, PORT_PRINTER } from '../const';
 import { Injectable } from '@angular/core';
+import Printer from 'escpos-print/Printer'
+import { Font, Justification, TextMode } from 'escpos-print/Commands'
+import { Network } from 'escpos-print/Adapters'
+
 declare const epson: any;
 
 /**
  * Printer service
  */
 @Injectable({ providedIn: 'root' })
-export class EpsonService {
+export class PrinterService {
 
     public printer: any;
+    template: any;
+    _printer: any;
+    constructor(private http: HttpClient) { }
 
-    constructor() { }
+    async init() {
+        const adapter = new Network(IP_PRINTER, PORT_PRINTER);
+        this._printer = await new Printer(adapter).open()
+    }
 
     connect() {
         const epsonDev = new epson.ePOSDevice();
@@ -125,5 +136,14 @@ export class EpsonService {
         return s;
     }
 
+    private generateBuffer(template: string, data: any) { }
+
+    async sendMessageToPrint(message: string) {
+
+    }
+
+    async testPrint() {
+        
+    }
 
 }

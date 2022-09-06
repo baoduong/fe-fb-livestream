@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { HomeModule } from './modules/home/home.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MatListModule } from '@angular/material/list';
+
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -18,7 +18,8 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { NavigationBarComponent } from './components/navigation-bar/navigation-bar.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { EpsonService } from './services/epson.service';
+import { SharesModule } from './modules/shares/shares.module';
+import { InvoicesManagementModule } from './modules/invoices-management/invoices-management.module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,15 +34,15 @@ import { EpsonService } from './services/epson.service';
     MatToolbarModule,
     MatIconModule,
     MatSidenavModule,
-    MatListModule,
+
     // provideFirebaseApp(() => initializeApp(environment.firebase)),
     // provideFirestore(() => getFirestore()),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
-    provideFirebaseApp(() => initializeApp(environment.firebase))
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    SharesModule.forRoot()
   ],
   providers: [
-    EpsonService
   ],
   bootstrap: [AppComponent]
 })

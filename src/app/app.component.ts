@@ -1,6 +1,7 @@
+import { TitleService } from './services/title.service';
 import { Component, Inject, AfterViewInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { EpsonService } from './services/epson.service';
+import { PrinterService } from './services/printer.service';
 
 declare var FB: any;
 
@@ -10,10 +11,12 @@ declare var FB: any;
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
-  title = 'fbLivestream';
+  title = 'Phần mềm bán hàng';
   window: any;
   constructor(@Inject(DOCUMENT) private document: Document,
-    private epsonService: EpsonService) {
+    private printerService: PrinterService,
+    public titleService: TitleService
+  ) {
     this.window = this.document.defaultView;
     this.window.fbAsyncInit = function () {
       FB.init({
@@ -27,7 +30,7 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     console.log('Let fb login')
-    
+
     this.window.fbAsyncInit();
     // FB.AppEvents.logPageView();
     FB.getLoginStatus(function (response: any) {   // See the onlogin handler
@@ -43,7 +46,8 @@ export class AppComponent implements AfterViewInit {
       }
     });
     console.log('Connect printer');
-    this.epsonService.connect()
+    // this.epsonService.connect()
+    this.printerService.init();
   }
 
 

@@ -2,3 +2,16 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.container{
+  margin: 10px;
+}
+
+mat-datepicker-toggle {
+  svg.mat-datepicker-toggle-default-icon {
+    width: 2em !important;
+  }
+}
+.mb-1{
+  margin-bottom: 1rem;
+}

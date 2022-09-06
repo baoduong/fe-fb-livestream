@@ -1,4 +1,4 @@
-import { EpsonService } from './../../../services/epson.service';
+import { PrinterService } from '../../../services/printer.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SelfTestComponent implements OnInit {
 
-  constructor(private printService: EpsonService) { }
+  constructor(private printService: PrinterService) { }
 
   ngOnInit(): void {
   }

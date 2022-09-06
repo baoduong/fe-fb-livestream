@@ -1,3 +1,4 @@
+import { TitleService } from './../../services/title.service';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject, filter } from 'rxjs';
@@ -22,8 +23,10 @@ export class DashboardComponent implements OnInit {
 
   constructor(private fbServices: FbServiceService,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    titleService: TitleService
   ) {
+    titleService.updateTitle("Theo dõi Livestream")
     this.live.pipe(filter((video) => video)).subscribe((video) => {
       const { id } = video;
 
