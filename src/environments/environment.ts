@@ -6,7 +6,7 @@ export const environment = {
   PAGEID: '115907658080115',
   production: false,
   crawlerAPI: 'http://127.0.0.1:5000',
-  pageAccessToken: 'EAAXy6F7AppkBAKUvqb2fFBePyvJTcAB9qDSfZBRJ6McIZAzRZBk0S6vKuyNCCrZCCZACMZAk4otGEfYEyEVvnPZCbPu51GJ3udpEbeNtBOQhngQGnTOKv1JSp5K7ZAzbZBKZBfyWmOqouYLl22fB9itZBrSMLlgwGgrdSvHKz18eYNKmuz5K2UVuaZCkGskhay9iCjCVpbZAgkL9bGgZDZD',
+  // pageAccessToken: 'EAAXy6F7AppkBAKUvqb2fFBePyvJTcAB9qDSfZBRJ6McIZAzRZBk0S6vKuyNCCrZCCZACMZAk4otGEfYEyEVvnPZCbPu51GJ3udpEbeNtBOQhngQGnTOKv1JSp5K7ZAzbZBKZBfyWmOqouYLl22fB9itZBrSMLlgwGgrdSvHKz18eYNKmuz5K2UVuaZCkGskhay9iCjCVpbZAgkL9bGgZDZD',
   firebase: {
     apiKey: "AIzaSyD46IINIMMT_QkZqVx0t08yGSlhT3wQePg",
     authDomain: "fb-livestream-f2d23.firebaseapp.com",

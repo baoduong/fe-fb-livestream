@@ -1,14 +1,5 @@
 {
-  "targets": {
-    "fb-livestream-f2d23": {
-      "hosting": {
-        "fbLivestream": [
-          "fb-livestream-f2d23"
-        ]
-      }
-    }
-  },
   "projects": {
-    "default": "fb-livestream-f2d23"
+    "default": "quanlydonhangfb"
   }
 }

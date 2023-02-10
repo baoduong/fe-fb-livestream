@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class FbServiceService {
   PAGEID = environment.PAGEID;
-  PAGE_ACCESSTOKEN = environment.pageAccessToken;
+  // PAGE_ACCESSTOKEN = environment.pageAccessToken;
   USERACCESSTOKEN = localStorage.getItem('fb_accessToken');
   constructor(private http: HttpClient) { }
 

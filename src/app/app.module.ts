@@ -21,13 +21,15 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { SharesModule } from './modules/shares/shares.module';
 import { InvoicesManagementModule } from './modules/invoices-management/invoices-management.module';
 import { AppService } from './app.config';
+import { PolicyComponent } from './components/policy/policy.component';
 
 declare var FB: any;
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavigationBarComponent
+    NavigationBarComponent,
+    PolicyComponent
   ],
   imports: [
     BrowserModule,
@@ -39,12 +41,11 @@ declare var FB: any;
     MatIconModule,
     MatSidenavModule,
 
-    // provideFirebaseApp(() => initializeApp(environment.firebase)),
     // provideFirestore(() => getFirestore()),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    SharesModule.forRoot()
+    SharesModule.forRoot(),
+    provideFirebaseApp(() => initializeApp(environment.firebase))
   ],
   providers: [
     AppService,
@@ -57,20 +58,4 @@ declare var FB: any;
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor() {
-    FB.getLoginStatus(function (response: any) {
-      // See the onlogin handler
-      console.log('response', response);
-      if (response.status === 'connected') {
-        const { authResponse } = response;
-        const { accessToken } = authResponse;
-        localStorage.setItem('fb_accessToken', accessToken);
-      } else {
-        FB.login((response: any) => {
-          console.log("FB's Response: ", response)
-        }, { scope: 'email,user_posts' });
-      }
-    });
-  }
-}
+export class AppModule { }
