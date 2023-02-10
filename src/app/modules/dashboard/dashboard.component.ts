@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit {
   live = new BehaviorSubject<any>(null);
   USERACCESSTOKEN = localStorage.getItem('fb_accessToken');
   ACCESSTOKEN_PAGE = '';
-
+  totalPage$ = new BehaviorSubject<number[]>([]);
   @ViewChild('chatDetailContainer', { read: ViewContainerRef })
   vcrChatDetailContainer!: ViewContainerRef;
 
@@ -29,32 +29,42 @@ export class DashboardComponent implements OnInit {
     titleService.updateTitle("Theo dõi Livestream")
     this.live.pipe(filter((video) => video)).subscribe((video) => {
       const { id } = video;
-
+      this.fbServices.getExistedCommentsInLive(id, this.ACCESSTOKEN_PAGE).subscribe((commensts: any) => {
+        console.log('comments', commensts);
+        commensts.data.forEach((c:any) => {
+          const { message, from, id: commentId } = c;
+          const { id: userID } = from;
+          this.loadComment(userID, message, commentId);
+        })
+      });
       var source = new EventSource(
         `https://streaming-graph.facebook.com/${id}/live_comments?access_token=${this.ACCESSTOKEN_PAGE}&comment_rate=one_hundred_per_second&fields=from{name,id},message`
       );
       source.onmessage = (event) => {
         const { data } = event;
         const messages = JSON.parse(data);
-        const { message, id: comment_id } = messages;
+        const { message, from, id: commentId } = messages;
+        console.log('messages', messages)
+        const { id: userID } = from;
 
-
-        this.fbServices.getUserInfo(comment_id).subscribe((u: any) => {
-          const { user } = u;
-          const userInfo = JSON.parse(user);
-          const _user = JSON.parse(userInfo);
-          const { comment } = _user;
-          const _comment = (comment as any[])[0]
-          const { author, text } = _comment;
-          const { identifier, name, url } = author;
-          this.addMessageComment(message, identifier, name, url, this.invoiceNumber$);
-        });
+        this.loadComment(userID, message, commentId);
       };
     });
   }
 
   ngOnInit(): void {
     this.getLiveVideo()
+  }
+
+  loadComment(userID: string, message: string, commentId: string) {
+    this.fbServices.getUserInfoByUserId(userID, this.ACCESSTOKEN_PAGE).subscribe((user: any) => {
+      console.log(user)
+      const { name, picture } = user;
+      const { data } = picture;
+      const { url: photoUrl } = data
+
+      this.addMessageComment(message, commentId, name, photoUrl, this.invoiceNumber$)
+    });
   }
 
   addMessageComment(message: string, identifier: string, name: string, url: string, invoiceNumber: BehaviorSubject<number>) {

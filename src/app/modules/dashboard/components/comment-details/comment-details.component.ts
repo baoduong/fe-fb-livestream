@@ -10,6 +10,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/comp
 export class CommentDetailsComponent implements OnInit {
   isExisted$ = new BehaviorSubject<boolean>(true);
   isDealed$ = new BehaviorSubject<boolean>(false);
+  @Input() url: string = '';
   @Input() message: string = '';
   @Input() name: string = '';
   @Input() identifier: string = '';

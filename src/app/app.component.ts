@@ -1,9 +1,6 @@
 import { TitleService } from './services/title.service';
 import { Component, Inject, AfterViewInit } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
 import { PrinterService } from './services/printer.service';
-
-declare var FB: any;
 
 @Component({
   selector: 'app-root',
@@ -13,41 +10,29 @@ declare var FB: any;
 export class AppComponent implements AfterViewInit {
   title = 'Phần mềm bán hàng';
   window: any;
-  constructor(@Inject(DOCUMENT) private document: Document,
+  constructor(
     private printerService: PrinterService,
     public titleService: TitleService
   ) {
-    this.window = this.document.defaultView;
-    this.window.fbAsyncInit = function () {
-      FB.init({
-        appId: '1674454719571609',
-        autoLogAppEvents: true,
-        xfbml: true,
-        version: 'v13.0'
-      });
-    };
+
   }
 
   ngAfterViewInit() {
-    console.log('Let fb login')
+    // console.log('Let fb login')
 
-    this.window.fbAsyncInit();
-    // FB.AppEvents.logPageView();
-    FB.getLoginStatus(function (response: any) {   // See the onlogin handler
-      console.log('response', response);
-      if (response.status === 'connected') {
-        const { authResponse } = response;
-        const { accessToken } = authResponse;
-        localStorage.setItem('fb_accessToken', accessToken);
-      } else {
-        FB.login((response: any) => {
-          console.log("FB's Response: ", response)
-        });
-      }
-    });
-    console.log('Connect printer');
-    // this.epsonService.connect()
-    this.printerService.init();
+    // this.window.fbAsyncInit();
+    // FB.getLoginStatus(function (response: any) {   // See the onlogin handler
+    //   console.log('response', response);
+    //   if (response.status === 'connected') {
+    //     const { authResponse } = response;
+    //     const { accessToken } = authResponse;
+    //     localStorage.setItem('fb_accessToken', accessToken);
+    //   } else {
+    //     FB.login((response: any) => {
+    //       console.log("FB's Response: ", response)
+    //     });
+    //   }
+    // });
   }
 
 

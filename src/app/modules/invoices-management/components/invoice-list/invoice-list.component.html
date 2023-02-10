@@ -6,6 +6,7 @@
         <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
     <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+        <button (click)="testFB()">Test</button>
         <ng-container *cdkVirtualFor="let item of invoceList">
             <mat-card class="mb-1 custom-mat-card">
                 <mat-card-subtitle>Dog Breed</mat-card-subtitle>
@@ -16,4 +17,5 @@
             </mat-card>
         </ng-container>
     </cdk-virtual-scroll-viewport>
+
 </div>

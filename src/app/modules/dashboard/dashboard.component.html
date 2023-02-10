@@ -5,6 +5,14 @@
     <button mat-raised-button class="bttn-find-live" color="primary" (click)="getLiveVideo()">
         Tìm livestream hiện tại
     </button>
+
+    <div class="paging">
+        <div class="paging-number">
+            <a href="#" *ngFor="let number of (totalPage$ | async)">
+                {{number}}
+            </a>
+        </div>
+    </div>
 </ng-container>
 <ng-container *ngIf="(live | async) !== null">
     <div class="invoice_info">
@@ -14,3 +22,5 @@
     </div>
 </ng-container>
 <ng-template #chatDetailContainer></ng-template>
+
+

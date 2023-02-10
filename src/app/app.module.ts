@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http'
 import { AppRoutingModule } from './app-routing.module';
@@ -20,6 +20,10 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { SharesModule } from './modules/shares/shares.module';
 import { InvoicesManagementModule } from './modules/invoices-management/invoices-management.module';
+import { AppService } from './app.config';
+
+declare var FB: any;
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,7 +47,30 @@ import { InvoicesManagementModule } from './modules/invoices-management/invoices
     SharesModule.forRoot()
   ],
   providers: [
+    AppService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (config: AppService) => () => config.load(),
+      deps: [AppService],
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    FB.getLoginStatus(function (response: any) {
+      // See the onlogin handler
+      console.log('response', response);
+      if (response.status === 'connected') {
+        const { authResponse } = response;
+        const { accessToken } = authResponse;
+        localStorage.setItem('fb_accessToken', accessToken);
+      } else {
+        FB.login((response: any) => {
+          console.log("FB's Response: ", response)
+        }, { scope: 'email,user_posts' });
+      }
+    });
+  }
+}

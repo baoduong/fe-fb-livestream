@@ -1,3 +1,4 @@
+import { FbServiceService } from './../../../dashboard/fb-service.service';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
@@ -9,15 +10,23 @@ import { TitleService } from 'src/app/services/title.service';
 })
 export class InvoiceListComponent implements OnInit {
 
+
   invoceList = new InvoiceDataSource();
 
-  constructor(titleService: TitleService) {
+  constructor(titleService: TitleService, private fbService: FbServiceService,) {
+
     titleService.updateTitle("Danh sách hoá đơn đã tạo")
   }
 
   ngOnInit(): void {
+    // this.invoceList.connect()
   }
+  testFB() {
+    this.fbService.getUserInfoByUserId("10217314997421947",'').subscribe(v => {
+      console.log('UserInfo', v)
+    })
 
+  }
 }
 
 export class InvoiceDataSource extends DataSource<any>{
@@ -65,4 +74,6 @@ export class InvoiceDataSource extends DataSource<any>{
       this._dataStream.next(this._cachedData);
     }, Math.random() * 1000 + 200);
   }
+
+
 }
