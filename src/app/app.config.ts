@@ -50,7 +50,7 @@ export class AppService {
             } else {
                 FB.login((response: any) => {
                     console.log("FB's Response: ", response)
-                }, { scope: 'email,user_posts' });
+                }, { scope: 'email,public_profile' });
             }
         });
     }
