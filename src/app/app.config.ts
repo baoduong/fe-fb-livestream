@@ -1,3 +1,4 @@
+import { WebSocketService } from './services/socket.service';
 import { FbServiceService } from './services/fb-service.service';
 import { environment } from './../environments/environment';
 import { Inject, Injectable } from '@angular/core';
@@ -15,6 +16,7 @@ export class AppService {
     appConfig: any;
     window: any;
     constructor(private http: HttpClient,
+        private wsService: WebSocketService,
         private fbServices: FbServiceService,
         private indexedDB: IndexedDBService,
         @Inject(DOCUMENT) private document: Document,) {
@@ -41,6 +43,7 @@ export class AppService {
             // See the onlogin handler
             console.log('response', response);
             if (response.status === 'connected') {
+                _this.wsService.connectPrint();
                 _this.indexedDB.openDatabase();
                 const { authResponse } = response;
                 const { accessToken } = authResponse;
