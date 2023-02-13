@@ -1,4 +1,4 @@
-import { FbServiceService } from './../../../dashboard/fb-service.service';
+import { FbServiceService } from '../../../../services/fb-service.service';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';

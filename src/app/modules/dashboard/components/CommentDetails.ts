@@ -13,27 +13,24 @@ export interface ICommentDetail {
     component: Type<any>;
     message: string;
     identifier: string;
-    name: string;
-    url: string;
+    userId: string;
     invoiceNumber: BehaviorSubject<number>;
     eventClickedMakeDeal?: EventEmitter<any>;
 }
 
 export class CommentDetails implements ICommentDetail {
     constructor(
+        public userId: string,
         public message: string,
         public identifier: string,
-        public name: string,
-        public url: string,
         public invoiceNumber: BehaviorSubject<number>,
         public component: Type<any>
     ) {
         this.component = component;
         this.message = message;
         this.identifier = identifier;
-        this.name = name;
-        this.url = url;
-        this.invoiceNumber = invoiceNumber
+        this.invoiceNumber = invoiceNumber;
+        this.userId = userId
     }
     // eventClickedAvatar: EventEmitter<any>;
 }

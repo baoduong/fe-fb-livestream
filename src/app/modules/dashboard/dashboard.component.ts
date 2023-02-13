@@ -1,11 +1,11 @@
 import { TitleService } from './../../services/title.service';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { BehaviorSubject, filter } from 'rxjs';
+import { BehaviorSubject, filter, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CommentDetailsComponent } from './components/comment-details/comment-details.component';
 import { CommentDetails } from './components/CommentDetails';
-import { FbServiceService } from './fb-service.service';
+import { FbServiceService } from '../../services/fb-service.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit {
   invoiceNumber$ = new BehaviorSubject<number>(1);
   live = new BehaviorSubject<any>(null);
   USERACCESSTOKEN = localStorage.getItem('fb_accessToken');
-  ACCESSTOKEN_PAGE = '';
+  page_access_token: string = localStorage.getItem('PAGE_ACCESS_TOKEN') || '';
   totalPage$ = new BehaviorSubject<number[]>([]);
   @ViewChild('chatDetailContainer', { read: ViewContainerRef })
   vcrChatDetailContainer!: ViewContainerRef;
@@ -28,26 +28,31 @@ export class DashboardComponent implements OnInit {
   ) {
     titleService.updateTitle("Theo dõi Livestream")
     this.live.pipe(filter((video) => video)).subscribe((video) => {
-      const { id } = video;
-      this.fbServices.getExistedCommentsInLive(id, this.ACCESSTOKEN_PAGE).subscribe((commensts: any) => {
+      const { id: liveVideoId } = video;
+      this.fbServices.getExistedCommentsInLive(liveVideoId, this.page_access_token).subscribe((commensts: any) => {
         console.log('comments', commensts);
-        commensts.data.forEach((c:any) => {
+        commensts.forEach(async (c: any) => {
           const { message, from, id: commentId } = c;
           const { id: userID } = from;
-          this.loadComment(userID, message, commentId);
+          console.log('userId', userID);
+          await this.loadComment(userID, message, commentId);
         })
       });
       var source = new EventSource(
-        `https://streaming-graph.facebook.com/${id}/live_comments?access_token=${this.ACCESSTOKEN_PAGE}&comment_rate=one_hundred_per_second&fields=from{name,id},message`
+        `https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${this.page_access_token}&comment_rate=one_hundred_per_second&fields=from{name,id,link},message`
       );
       source.onmessage = (event) => {
         const { data } = event;
         const messages = JSON.parse(data);
-        const { message, from, id: commentId } = messages;
-        console.log('messages', messages)
-        const { id: userID } = from;
+        const { message, id: commentId } = messages;
 
-        this.loadComment(userID, message, commentId);
+        this.fbServices.getExistedCommentsInLive(liveVideoId, this.page_access_token).pipe(
+          map(comments => comments[comments.length - 1])
+        ).subscribe(lastComment => {
+          const { from } = lastComment;
+          const { id } = from;
+          this.loadComment(id, message, commentId);
+        })
       };
     });
   }
@@ -56,30 +61,22 @@ export class DashboardComponent implements OnInit {
     this.getLiveVideo()
   }
 
-  loadComment(userID: string, message: string, commentId: string) {
-    this.fbServices.getUserInfoByUserId(userID, this.ACCESSTOKEN_PAGE).subscribe((user: any) => {
-      console.log(user)
-      const { name, picture } = user;
-      const { data } = picture;
-      const { url: photoUrl } = data
+  async loadComment(userID: string, message: string, commentId: string) {
 
-      this.addMessageComment(message, commentId, name, photoUrl, this.invoiceNumber$)
-    });
+    this.addMessageComment(userID, message, commentId, this.invoiceNumber$)
   }
 
-  addMessageComment(message: string, identifier: string, name: string, url: string, invoiceNumber: BehaviorSubject<number>) {
+  addMessageComment(userId: string, message: string, identifier: string, invoiceNumber: BehaviorSubject<number>) {
     if (this.vcrChatDetailContainer) {
-      const cpnMessageDetail = new CommentDetails(
-        message, identifier, name, url, invoiceNumber,
+      const cpnMessageDetail = new CommentDetails(userId,
+        message, identifier, invoiceNumber,
         CommentDetailsComponent);
 
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(cpnMessageDetail.component);
-      const componentRef = this.vcrChatDetailContainer.createComponent<any>(componentFactory);
-      // this.render.addClass(componentRef.location.nativeElement, cssClass);
+      const componentRef = this.vcrChatDetailContainer.createComponent<any>(componentFactory, 0);
+      componentRef.instance.userId = userId;
       componentRef.instance.message = message;
       componentRef.instance.identifier = identifier;
-      componentRef.instance.url = url;
-      componentRef.instance.name = name;
       componentRef.instance.invoiceNumber = invoiceNumber;
       componentRef.changeDetectorRef.detectChanges();
 
@@ -97,23 +94,18 @@ export class DashboardComponent implements OnInit {
   }
 
   getLiveVideo() {
-    this.fbServices.getPageAccessToken()
-      .subscribe((data: any) => {
-        console.log('data Page Access Token:', data);
-        const { access_token } = data;
-        this.ACCESSTOKEN_PAGE = access_token;
-        this.fbServices.getLiveVideo(access_token).subscribe((res: any) => {
-          console.log('res:', res);
-          const { data } = res;
-          console.log('data', data);
-          const liveVideo = (data as any as []).filter(
-            (video) => video['status'] === 'LIVE'
-          )[0];
-          console.log('liveVideo', liveVideo);
-          if (liveVideo) {
-            this.live.next(liveVideo);
-          }
-        })
-      });
+    this.fbServices.getLiveVideo(this.page_access_token).subscribe((res: any) => {
+      console.log('Live videos:', res);
+      const { data } = res;
+      console.log('data', data);
+      const liveVideo = (data as any as []).filter(
+        (video) => video['status'] === 'LIVE'
+      )[0];
+      console.log('liveVideo', liveVideo);
+      if (liveVideo) {
+        this.live.next(liveVideo);
+      }
+    })
   }
+
 }

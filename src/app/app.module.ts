@@ -41,7 +41,7 @@ declare var FB: any;
     MatIconModule,
     MatSidenavModule,
 
-    // provideFirestore(() => getFirestore()),
+    provideFirestore(() => getFirestore()),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
     SharesModule.forRoot(),
