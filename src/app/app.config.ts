@@ -43,7 +43,7 @@ export class AppService {
             // See the onlogin handler
             console.log('response', response);
             if (response.status === 'connected') {
-                _this.wsService.connectPrint();
+                // _this.wsService.connectPrint();
                 _this.indexedDB.openDatabase();
                 const { authResponse } = response;
                 const { accessToken } = authResponse;
@@ -53,10 +53,11 @@ export class AppService {
                     const { access_token } = res;
                     localStorage.setItem('PAGE_ACCESS_TOKEN', access_token);
                 })
+                // localStorage.setItem('PAGE_ACCESS_TOKEN', environment.APP_TOKEN);
             } else {
                 FB.login((response: any) => {
                     console.log("FB's Response: ", response)
-                }, { scope: 'email,public_profile' });
+                }, { scope: 'public_profile,read_stream' });
             }
         });
     }

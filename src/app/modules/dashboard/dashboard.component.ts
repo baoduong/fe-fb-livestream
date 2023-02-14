@@ -33,9 +33,13 @@ export class DashboardComponent implements OnInit {
         console.log('comments', commensts);
         commensts.forEach(async (c: any) => {
           const { message, from, id: commentId } = c;
-          const { id: userID } = from;
-          console.log('userId', userID);
-          await this.loadComment(userID, message, commentId);
+          // const { id: userID } = from;
+          // console.log('userId', userID);
+          console.log('get comment info')
+          await this.fbServices.getCommentInfo(liveVideoId, commentId, this.page_access_token).subscribe(commentInfo => {
+            console.log('commentInfo', commentInfo)
+          })
+          // await this.loadComment(userID, message, commentId);
         })
       });
       var source = new EventSource(

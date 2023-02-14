@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class FbServiceService {
   getPageAccessToken() {
     return this.http
       .get(
-        `https://graph.facebook.com/${this.PAGEID}?fields=access_token&access_token=${this.USERACCESSTOKEN}`
+        `https://graph.facebook.com/${this.PAGEID}?fields=access_token,comments&access_token=${this.USERACCESSTOKEN}`
       )
   }
 
@@ -25,12 +25,16 @@ export class FbServiceService {
       )
   }
 
-  getCommentInfo(OBJECT_ID: string, pageAccessToken = '') {
+  getCommentInfo(liveVideoId: string, commentId: string, pageAccessToken = '') {
+    // const headers = new HttpHeaders({
+    //   'Access-Token': pageAccessToken
+    // });
     // `https://graph.facebook.com/${this.PAGEID}/feed?access_token=${this.PAGE_ACCESSTOKEN}`
     return this.http
       .get(
-        `https://graph.facebook.com/${OBJECT_ID}/comments?access_token=${pageAccessToken}`
+        `https://graph.facebook.com/${commentId}?fields=from&access_token=${pageAccessToken}`
       )
+    // return this.http.get(`https://graph.facebook.com/${liveVideoId}/comments?filter=stream&limit=1&after=${commentId}&fields=from,message`, { headers })
   }
 
   getUserInfoByUserId(userId: string, pageAccessToken: string) {
