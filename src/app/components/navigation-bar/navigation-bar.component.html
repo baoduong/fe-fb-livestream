@@ -1,5 +1,5 @@
 <mat-list style="flex:1">
-    <mat-list-item [routerLink]="['/Dashboard']" matRipple>
+    <mat-list-item [routerLink]="['/dashboard']" matRipple>
         <mat-icon>live_tv</mat-icon>
         Livestream
     </mat-list-item>
@@ -19,6 +19,10 @@
         <mat-list-item>
             <mat-icon>settings</mat-icon>
             Cấu hình
+        </mat-list-item>
+        <mat-list-item (click)="logoutFromFacebook()">
+            <mat-icon>logout</mat-icon>
+            Đăng xuất
         </mat-list-item>
     </mat-list>
 </div>

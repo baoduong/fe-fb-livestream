@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit {
   invoiceNumber$ = new BehaviorSubject<number>(1);
   live = new BehaviorSubject<any>(null);
   USERACCESSTOKEN = localStorage.getItem('fb_accessToken');
-  page_access_token: string = localStorage.getItem('PAGE_ACCESS_TOKEN') || '';
+  page_access_token: string = '';
   totalPage$ = new BehaviorSubject<number[]>([]);
   @ViewChild('chatDetailContainer', { read: ViewContainerRef })
   vcrChatDetailContainer!: ViewContainerRef;
@@ -26,43 +26,51 @@ export class DashboardComponent implements OnInit {
     private cd: ChangeDetectorRef,
     titleService: TitleService
   ) {
-    titleService.updateTitle("Theo dõi Livestream")
-    this.live.pipe(filter((video) => video)).subscribe((video) => {
-      const { id: liveVideoId } = video;
-      this.fbServices.getExistedCommentsInLive(liveVideoId, this.page_access_token).subscribe((commensts: any) => {
-        console.log('comments', commensts);
-        commensts.forEach(async (c: any) => {
-          const { message, from, id: commentId } = c;
-          // const { id: userID } = from;
-          // console.log('userId', userID);
-          console.log('get comment info')
-          await this.fbServices.getCommentInfo(liveVideoId, commentId, this.page_access_token).subscribe(commentInfo => {
-            console.log('commentInfo', commentInfo)
+    titleService.updateTitle("Theo dõi Livestream");
+    this.fbServices.getPageAccessToken().subscribe((token: any) => {
+      console.log('Page access Token: ', token)
+      const { access_token } = token;
+      this.page_access_token = access_token;
+    }).add(() => {
+      this.getLiveVideo();
+      this.live.pipe(filter((video) => video)).subscribe((video) => {
+        const { id: liveVideoId } = video;
+        this.fbServices.getExistedCommentsInLive(liveVideoId, this.page_access_token).subscribe((commensts: any) => {
+          console.log('comments', commensts);
+          commensts.forEach(async (c: any) => {
+            const { message, from, id: commentId } = c;
+            // const { id: userID } = from;
+            // console.log('userId', userID);
+            console.log('get comment info')
+            await this.fbServices.getCommentInfo(liveVideoId, commentId, this.page_access_token).subscribe(commentInfo => {
+              console.log('commentInfo', commentInfo)
+            })
+            // await this.loadComment(userID, message, commentId);
           })
-          // await this.loadComment(userID, message, commentId);
-        })
-      });
-      var source = new EventSource(
-        `https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${this.page_access_token}&comment_rate=one_hundred_per_second&fields=from{name,id,link},message`
-      );
-      source.onmessage = (event) => {
-        const { data } = event;
-        const messages = JSON.parse(data);
-        const { message, id: commentId } = messages;
+        });
+        var source = new EventSource(
+          `https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${this.page_access_token}&comment_rate=one_hundred_per_second&fields=from{name,id,link},message`
+        );
+        source.onmessage = (event) => {
+          const { data } = event;
+          const messages = JSON.parse(data);
+          const { message, id: commentId } = messages;
 
-        this.fbServices.getExistedCommentsInLive(liveVideoId, this.page_access_token).pipe(
-          map(comments => comments[comments.length - 1])
-        ).subscribe(lastComment => {
-          const { from } = lastComment;
-          const { id } = from;
-          this.loadComment(id, message, commentId);
-        })
-      };
-    });
+          this.fbServices.getExistedCommentsInLive(liveVideoId, this.page_access_token).pipe(
+            map(comments => comments[comments.length - 1])
+          ).subscribe(lastComment => {
+            const { from } = lastComment;
+            const { id } = from;
+            this.loadComment(id, message, commentId);
+          })
+        };
+      });
+    })
+
   }
 
   ngOnInit(): void {
-    this.getLiveVideo()
+    
   }
 
   async loadComment(userID: string, message: string, commentId: string) {

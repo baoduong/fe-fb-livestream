@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { FacebookService } from 'ngx-facebook';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -8,9 +9,13 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 })
 export class NavigationBarComponent implements OnInit {
 
-  constructor() { }
+  constructor(private fb: FacebookService) { }
 
   ngOnInit(): void {
   }
-
+  logoutFromFacebook() {
+    this.fb.logout()
+      .then(() => console.log('Logged out from Facebook'))
+      .catch((error: any) => console.error(error));
+  }
 }

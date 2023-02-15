@@ -14,7 +14,7 @@ export class FbServiceService {
   getPageAccessToken() {
     return this.http
       .get(
-        `https://graph.facebook.com/${this.PAGEID}?fields=access_token,comments&access_token=${this.USERACCESSTOKEN}`
+        `https://graph.facebook.com/${this.PAGEID}?fields=access_token&access_token=${this.USERACCESSTOKEN}`
       )
   }
 

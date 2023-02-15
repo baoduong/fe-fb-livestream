@@ -22,14 +22,16 @@ import { SharesModule } from './modules/shares/shares.module';
 import { InvoicesManagementModule } from './modules/invoices-management/invoices-management.module';
 import { AppService } from './app.config';
 import { PolicyComponent } from './components/policy/policy.component';
+import { LoginComponent } from './components/login/login.component';
+import { FacebookModule, FacebookService } from 'ngx-facebook';
 
-declare var FB: any;
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationBarComponent,
-    PolicyComponent
+    PolicyComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +42,7 @@ declare var FB: any;
     MatToolbarModule,
     MatIconModule,
     MatSidenavModule,
-
+    FacebookModule.forRoot(),
     provideFirestore(() => getFirestore()),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
@@ -48,6 +50,7 @@ declare var FB: any;
     provideFirebaseApp(() => initializeApp(environment.firebase))
   ],
   providers: [
+    FacebookService,
     AppService,
     {
       provide: APP_INITIALIZER,
