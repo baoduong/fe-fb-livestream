@@ -1,3 +1,4 @@
+import { TestingPageComponent } from './components/testing-page/testing-page.component';
 import { LoginComponent } from './components/login/login.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -5,6 +6,10 @@ import { PolicyComponent } from './components/policy/policy.component';
 import { AuthGuard } from './guard/app.guard';
 
 const routes: Routes = [
+  {
+    path: 'testing',
+    component: TestingPageComponent
+  },
   {
     path: '',
     redirectTo: 'dashboard',

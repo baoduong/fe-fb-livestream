@@ -21,6 +21,7 @@ export class IndexedDBService {
             const db = event.target.result;
             db.createObjectStore('Customers', { keyPath: 'id' });
             db.createObjectStore('Invoices', { keyPath: 'InvoiceId' });
+            db.createObjectStore('FBPages', { keyPath: 'id' });
         };
     }
 

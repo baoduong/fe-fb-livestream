@@ -1,6 +1,7 @@
+import { WebSocketService } from './../../services/ws.service';
 import { TitleService } from './../../services/title.service';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject, filter, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CommentDetailsComponent } from './components/comment-details/comment-details.component';
@@ -12,7 +13,7 @@ import { FbServiceService } from '../../services/fb-service.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   invoiceNumber$ = new BehaviorSubject<number>(1);
   live = new BehaviorSubject<any>(null);
   USERACCESSTOKEN = localStorage.getItem('fb_accessToken');
@@ -22,47 +23,52 @@ export class DashboardComponent implements OnInit {
   vcrChatDetailContainer!: ViewContainerRef;
 
   constructor(private fbServices: FbServiceService,
+    private wsService: WebSocketService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private cd: ChangeDetectorRef,
     titleService: TitleService
   ) {
     titleService.updateTitle("Theo dõi Livestream");
+    this.wsService.connect();
+    
     this.fbServices.getPageAccessToken().subscribe((token: any) => {
+      
       console.log('Page access Token: ', token)
       const { access_token } = token;
       this.page_access_token = access_token;
     }).add(() => {
       this.getLiveVideo();
-      this.live.pipe(filter((video) => video)).subscribe((video) => {
+      this.live.pipe(filter((video) => video)).subscribe(async (video) => {
         const { id: liveVideoId } = video;
-        this.fbServices.getExistedCommentsInLive(liveVideoId, this.page_access_token).subscribe((commensts: any) => {
-          console.log('comments', commensts);
-          commensts.forEach(async (c: any) => {
-            const { message, from, id: commentId } = c;
-            // const { id: userID } = from;
-            // console.log('userId', userID);
-            console.log('get comment info')
-            await this.fbServices.getCommentInfo(liveVideoId, commentId, this.page_access_token).subscribe(commentInfo => {
-              console.log('commentInfo', commentInfo)
-            })
-            // await this.loadComment(userID, message, commentId);
-          })
-        });
+        // await this.fbServices.getExistedCommentsInLive(liveVideoId, this.page_access_token).subscribe((commensts: any) => {
+        //   console.log('comments', commensts);
+        //   commensts.forEach(async (c: any) => {
+        //     const { message, from, id: commentId } = c;
+        //     // const { id: userID } = from;
+        //     // console.log('userId', userID);
+        //     console.log('get comment info')
+        //     // this.fbServices.getCommentInfo(liveVideoId, commentId, this.page_access_token).subscribe(commentInfo => {
+        //     //   console.log('commentInfo', commentInfo)
+        //       this.loadComment('TEMPORARY', message, commentId);
+        //     // })
+        //   })
+        // });
         var source = new EventSource(
-          `https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${this.page_access_token}&comment_rate=one_hundred_per_second&fields=from{name,id,link},message`
+          `https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${this.page_access_token}&comment_rate=one_per_two_seconds&fields=from{name,id},message`
         );
         source.onmessage = (event) => {
           const { data } = event;
+          console.log('live comment: ', data)
           const messages = JSON.parse(data);
           const { message, id: commentId } = messages;
-
-          this.fbServices.getExistedCommentsInLive(liveVideoId, this.page_access_token).pipe(
-            map(comments => comments[comments.length - 1])
-          ).subscribe(lastComment => {
-            const { from } = lastComment;
-            const { id } = from;
-            this.loadComment(id, message, commentId);
-          })
+          this.loadComment('TEMPORARY', message, commentId);
+          // this.fbServices.getExistedCommentsInLive(liveVideoId, this.page_access_token).pipe(
+          //   map(comments => comments[comments.length - 1])
+          // ).subscribe(lastComment => {
+          //   const { from } = lastComment;
+          //   const { id } = from;
+          //   this.loadComment('TEMPORARY', message, commentId);
+          // })
         };
       });
     })
@@ -70,7 +76,11 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
+  }
+
+  ngOnDestroy(): void {
+    this.wsService.close()
   }
 
   async loadComment(userID: string, message: string, commentId: string) {
@@ -120,4 +130,7 @@ export class DashboardComponent implements OnInit {
     })
   }
 
+  sendMessageTest() {
+    this.wsService.sendMessage('This message come from local')
+  }
 }

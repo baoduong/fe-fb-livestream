@@ -4,11 +4,8 @@
 
 export const environment = {
   APP_ID: '1674454719571609',
-  PAGEID: '108104481470456',
   production: false,
-  crawlerAPI: 'http://127.0.0.1:5000',
-  APP_TOKEN: 'EAAXy6F7AppkBAAZBLlbcwZBEZAvvTG9XuOVfIUEVpLNRS1zSa2UveE0lhZAxo9aEnvuCkMDUHeseokakuXVrhx4koAMCoxLp0OZBmyxgYjHVxn7PR1XcH6gIpn884fWNoLFDCOrfhh3OJr6g64w2MZCrCz3iywUyEJwAjgkrl88IBQlul12KZA9',
-  // pageAccessToken: 'EAAXy6F7AppkBAKUvqb2fFBePyvJTcAB9qDSfZBRJ6McIZAzRZBk0S6vKuyNCCrZCCZACMZAk4otGEfYEyEVvnPZCbPu51GJ3udpEbeNtBOQhngQGnTOKv1JSp5K7ZAzbZBKZBfyWmOqouYLl22fB9itZBrSMLlgwGgrdSvHKz18eYNKmuz5K2UVuaZCkGskhay9iCjCVpbZAgkL9bGgZDZD',
+  wssUrl: 'wss://6z6zotfpqf.execute-api.ap-southeast-1.amazonaws.com/development',
   firebase: {
     apiKey: "AIzaSyCiIAbsj_GSecdbLsv8knJaOPjmEzLZznE",
     authDomain: "quanlydonhangfb.firebaseapp.com",

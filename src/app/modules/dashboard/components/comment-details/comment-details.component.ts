@@ -53,7 +53,6 @@ export class CommentDetailsComponent implements OnInit {
         this.isDealed$.unsubscribe();
       } else {
         this.invoiceCollection.doc(this.identifier).get().subscribe(invoice => {
-          console.log(invoice)
           this.isDealed$.next(invoice.exists);
         })
       }
@@ -98,12 +97,12 @@ export class CommentDetailsComponent implements OnInit {
         this.name = userCached.name;
         this.url = userCached.picture.data.url;
       } else {
-        this.fbServices.getUserInfoByUserId(this.userId, this.page_access_token).subscribe((user: any) => {
-          console.log('User info', user);
-          this.name = user.name;
-          this.url = user.picture.data.url;
-          this.indexedDBService.addData(user, CUSTOMERS_TABLE);
-        });
+        // this.fbServices.getUserInfoByUserId(this.userId, this.page_access_token).subscribe((user: any) => {
+        //   console.log('User info', user);
+        //   this.name = user.name;
+        //   this.url = user.picture.data.url;
+        //   this.indexedDBService.addData(user, CUSTOMERS_TABLE);
+        // });
       }
     })
   }

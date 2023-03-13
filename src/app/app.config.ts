@@ -32,7 +32,9 @@ export class AppService {
         // };
         const initParams: InitParams = {
             appId: environment.APP_ID,
-            version: 'v16.0'
+            version: 'v16.0',
+            cookie: true,
+            xfbml: true,
         };
         this.fb.init(initParams);
     }
@@ -41,7 +43,7 @@ export class AppService {
     }
 
     public load() {
-        
+        this.indexedDB.openDatabase();
         // this.window.fbAsyncInit();
         // const _this = this;
         // FB.getLoginStatus(function (response: any) {

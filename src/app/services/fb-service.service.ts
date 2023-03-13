@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
+import { IndexedDBService } from './indexeddb.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FbServiceService {
-  PAGEID = environment.PAGEID;
+  PAGEID = localStorage.getItem('PAGE_ID');
   USERACCESSTOKEN = localStorage.getItem('fb_accessToken');
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private indexedDB: IndexedDBService) { }
 
   getPageAccessToken() {
     return this.http
@@ -30,11 +31,11 @@ export class FbServiceService {
     //   'Access-Token': pageAccessToken
     // });
     // `https://graph.facebook.com/${this.PAGEID}/feed?access_token=${this.PAGE_ACCESSTOKEN}`
-    return this.http
-      .get(
-        `https://graph.facebook.com/${commentId}?fields=from&access_token=${pageAccessToken}`
-      )
-    // return this.http.get(`https://graph.facebook.com/${liveVideoId}/comments?filter=stream&limit=1&after=${commentId}&fields=from,message`, { headers })
+    // return this.http
+    // .get(
+    //   `https://graph.facebook.com/${commentId}?fields=from&access_token=${pageAccessToken}`
+    // )
+    return this.http.get(`https://graph.facebook.com/${liveVideoId}/comments?filter=stream&limit=1&after=${commentId}&fields=from,message`)
   }
 
   getUserInfoByUserId(userId: string, pageAccessToken: string) {
@@ -45,5 +46,21 @@ export class FbServiceService {
     return this.http.get(`https://graph.facebook.com/${liveVideoId}/comments?fields=created_time,from,message&access_token=${pageAccessToken}`).pipe(
       map((res: any) => res.data)
     )
+  }
+
+  getCurrentUser() {
+    return this.http.get(`https://graph.facebook.com/me?fields=accounts&access_token=${this.USERACCESSTOKEN}`)
+      .pipe(
+        map((res: any) => res.accounts),
+        map(accounts => accounts.data),
+        tap((pages: any[]) => {
+          console.log(pages)
+          pages.forEach(page => {
+            const { id, name, access_token } = page
+            
+            this.indexedDB.addData({ id, name, access_token }, 'FBPages');
+          });
+        })
+      )
   }
 }

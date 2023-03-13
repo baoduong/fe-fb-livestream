@@ -24,6 +24,7 @@ import { AppService } from './app.config';
 import { PolicyComponent } from './components/policy/policy.component';
 import { LoginComponent } from './components/login/login.component';
 import { FacebookModule, FacebookService } from 'ngx-facebook';
+import { TestingPageComponent } from './components/testing-page/testing-page.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { FacebookModule, FacebookService } from 'ngx-facebook';
     AppComponent,
     NavigationBarComponent,
     PolicyComponent,
-    LoginComponent
+    LoginComponent,
+    TestingPageComponent
   ],
   imports: [
     BrowserModule,
