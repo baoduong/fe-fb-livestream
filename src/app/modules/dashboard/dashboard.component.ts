@@ -29,10 +29,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     titleService: TitleService
   ) {
     titleService.updateTitle("Theo dõi Livestream");
-    this.wsService.connect();
-    
+    // this.wsService.connect();
+
     this.fbServices.getPageAccessToken().subscribe((token: any) => {
-      
+
       console.log('Page access Token: ', token)
       const { access_token } = token;
       this.page_access_token = access_token;

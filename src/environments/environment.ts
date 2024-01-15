@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  APP_ID: '1674454719571609',
+  APP_ID: '347124434846754',
   production: false,
   wssUrl: 'wss://6z6zotfpqf.execute-api.ap-southeast-1.amazonaws.com/development',
   firebase: {
@@ -13,7 +13,8 @@ export const environment = {
     storageBucket: "quanlydonhangfb.appspot.com",
     messagingSenderId: "117822853832",
     appId: "1:117822853832:web:536243496bd6889793cbfd"
-  }
+  },
+  PAGE_ID: '115907658080115'
 };
 
 /*

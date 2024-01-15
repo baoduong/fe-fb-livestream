@@ -18,7 +18,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // console.log('Let fb login')
+    console.log('Let fb login')
 
     // this.window.fbAsyncInit();
     // FB.getLoginStatus(function (response: any) {   // See the onlogin handler

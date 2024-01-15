@@ -5,25 +5,26 @@ import { map, tap } from 'rxjs';
 import { IndexedDBService } from './indexeddb.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FbServiceService {
   PAGEID = localStorage.getItem('PAGE_ID');
   USERACCESSTOKEN = localStorage.getItem('fb_accessToken');
-  constructor(private http: HttpClient, private indexedDB: IndexedDBService) { }
+  constructor(
+    private http: HttpClient,
+    private indexedDB: IndexedDBService,
+  ) {}
 
   getPageAccessToken() {
-    return this.http
-      .get(
-        `https://graph.facebook.com/${this.PAGEID}?fields=access_token&access_token=${this.USERACCESSTOKEN}`
-      )
+    return this.http.get(
+      `https://graph.facebook.com/${this.PAGEID}?fields=access_token&access_token=${this.USERACCESSTOKEN}`,
+    );
   }
 
   getLiveVideo(accessTokenPage: string) {
-    return this.http
-      .get(
-        `https://graph.facebook.com/${this.PAGEID}/live_videos?access_token=${accessTokenPage}`
-      )
+    return this.http.get(
+      `https://graph.facebook.com/${this.PAGEID}/live_videos?access_token=${accessTokenPage}`,
+    );
   }
 
   getCommentInfo(liveVideoId: string, commentId: string, pageAccessToken = '') {
@@ -35,32 +36,48 @@ export class FbServiceService {
     // .get(
     //   `https://graph.facebook.com/${commentId}?fields=from&access_token=${pageAccessToken}`
     // )
-    return this.http.get(`https://graph.facebook.com/${liveVideoId}/comments?filter=stream&limit=1&after=${commentId}&fields=from,message`)
+    return this.http.get(
+      `https://graph.facebook.com/${liveVideoId}/comments?filter=stream&limit=1&after=${commentId}&fields=from,message`,
+    );
   }
 
   getUserInfoByUserId(userId: string, pageAccessToken: string) {
-    return this.http.get(`https://graph.facebook.com/${userId}?fields=name,picture,link&access_token=${pageAccessToken}`)
+    return this.http.get(
+      `https://graph.facebook.com/${userId}?fields=name,picture,link&access_token=${pageAccessToken}`,
+    );
   }
 
   getExistedCommentsInLive(liveVideoId: string, pageAccessToken: string) {
-    return this.http.get(`https://graph.facebook.com/${liveVideoId}/comments?fields=created_time,from,message&access_token=${pageAccessToken}`).pipe(
-      map((res: any) => res.data)
-    )
+    return this.http
+      .get(
+        `https://graph.facebook.com/${liveVideoId}/comments?fields=created_time,from,message&access_token=${pageAccessToken}`,
+      )
+      .pipe(map((res: any) => res.data));
   }
 
-  getCurrentUser() {
-    return this.http.get(`https://graph.facebook.com/me?fields=accounts&access_token=${this.USERACCESSTOKEN}`)
+  getCurrentUser(access_token?: string) {
+    if (access_token) {
+      this.USERACCESSTOKEN = access_token;
+      localStorage.setItem('fb_accessToken', access_token);
+    }
+    return this.http
+      .get(
+        `https://graph.facebook.com/me?fields=accounts&access_token=${this.USERACCESSTOKEN}`,
+      )
       .pipe(
         map((res: any) => res.accounts),
-        map(accounts => accounts.data),
+        map((accounts) => accounts.data),
         tap((pages: any[]) => {
-          console.log(pages)
-          pages.forEach(page => {
-            const { id, name, access_token } = page
-            
+          console.log(pages);
+          pages.forEach((page) => {
+            const { id, name, access_token } = page;
+
             this.indexedDB.addData({ id, name, access_token }, 'FBPages');
+            // TODO: uncomment for dynamic page
+            // localStorage.setItem('PAGE_ID', id);
+            localStorage.setItem('PAGE_ID', environment.PAGE_ID);
           });
-        })
-      )
+        }),
+      );
   }
 }

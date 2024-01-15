@@ -7,38 +7,41 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-
-  constructor(private fb: FacebookService, private router: Router,
-    private fbService: FbServiceService) { }
+  constructor(
+    private fb: FacebookService,
+    private router: Router,
+    private fbService: FbServiceService,
+  ) {}
 
   ngOnInit(): void {
-    this.fb.getLoginStatus().then(loginStatus => {
+    this.fb.getLoginStatus().then((loginStatus) => {
       console.log('Login status', loginStatus);
       if (loginStatus.status === 'connected') {
         console.log('User is already loggin');
         this.router.navigate(['/dashboard']);
       }
-    })
+    });
   }
 
   loginWithFacebook() {
-    this.fb.login({
-      scope: 'public_profile,pages_show_list'
-    })
+    this.fb
+      .login({
+        scope: 'public_profile,pages_show_list,pages_read_engagement',
+      })
       .then((response: LoginResponse) => {
         if (response.status === 'connected') {
-          console.log('Get status accounts')
-          this.fbService.getCurrentUser().subscribe(data => {
-            console.log('data page', data)
-            this.router.navigate(['/dashboard'])
-          })
-
-        };
+          console.log('Get status accounts', response);
+          this.fbService
+            .getCurrentUser(response.authResponse.accessToken)
+            .subscribe((data) => {
+              console.log('data page', data);
+              this.router.navigate(['/dashboard']);
+            });
+        }
       })
       .catch((error: any) => console.error(error));
   }
-
 }
